@@ -58,10 +58,10 @@ async function refreshBtn(){
         const data = await response.json()
 
         const messages = Object.values(data)
-        textArea.value = messages.map(m => `${x.author}: ${x.content}`).join("\n")
+        textArea.value = messages.map(m => `${m.author}: ${m.content}`).join("\n")
 
 
     }catch (error){
         console.log('Fetching Error')
-    }
+        }
 }
