@@ -4,8 +4,9 @@ const { expect } = require('chai');
 let browser, page; // Declare reusable variables
 
 
-describe('E2E tests', async function() {
+describe('E2E tests', async function(done) {
     this.time(5000)
+    this.done
     before(async () => { browser = await chromium.launch(); });
     after(async () => { await browser.close(); });
     beforeEach(async () => { page = await browser.newPage(); });
@@ -24,20 +25,29 @@ describe('E2E tests', async function() {
         expect(content).to.contains("ALGOL")
     })
 
-    it("initial load", async () => {
+    it("More button works", async () => {
         await page.goto("http://loaclhost:5500")
         await page.waitForSelector(".accordion")
 
         await page.click("text=More")
 
         await page.waitForResponse(/articles\/details/i)
-
-        await page.waitForSelector(".accordion p")
         const visible = await page.isVisible(".accordion p")
 
-        expect(content).to.contains("Scalable Vector Graphics")
-        expect(content).to.contains("Open standard")
-        expect(content).to.contains("Unix")
-        expect(content).to.contains("ALGOL")
+        expect(visible).to.be.true
+    })
+
+    it("More button works", async () => {
+        await page.goto("http://loaclhost:5500")
+        await page.waitForSelector(".accordion")
+
+        await page.click("text=More")
+        await page.waitForResponse(/articles\/details/i)
+        await page.waitForSelector(".accordion p",{state: "visible"})
+        await page.click("text=Less")
+
+        const visible = await page.isVisible(".accordion p")
+
+        expect(visible).to.be.false
     })
 });
